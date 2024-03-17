@@ -294,7 +294,7 @@ class SkyUploader {
 			request.onload = e => {
 				try {
 					const result = JSON.parse(e.target.responseText);
-					console.log(result);
+					//console.log(result);
 
 					delete(file.request);
 					if (result.success) {
@@ -559,7 +559,6 @@ class SkyUploader {
 	}
 	
 	addToProcess(file) {
-		console.log('end :', file.index);
 		this.processes.push(file);
 	}
 	
