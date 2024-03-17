@@ -16,12 +16,14 @@ class SkyUploader {
 	usePreview = false;
 	accept     = '';
 	maxCount   = 1;
+	maxProcess = 3;
 	maxSize    = 20 * 1024 * 1024; // MB
 	chunkSize  = 10 * 1024 * 1024; // MB
 	data       = {};
 	messages   = {
 		MAX_COUNT: '업로드 가능한 파일 갯수를 초과하였습니다.',
 		MAX_SIZE: '업로드 가능한 파일 크기를 초과한 파일이 제외되었습니다.',
+		ALREADY_ADDED: '중복으로 추가된 파일이 제외되었습니다.',
 		INVALID_RESPONSE: '서버 응답 오류',
 		UPLOAD_FAIL: '업로드 실패',	
 	};
@@ -37,6 +39,7 @@ class SkyUploader {
 	input;
 	inputContainer;
 	files = [];
+	processes = [];
 
 	constructor(container, options) {
 		this.option(options || {});
@@ -55,6 +58,7 @@ class SkyUploader {
 			'usePreview',
 			'accept',
 			'maxCount',
+			'maxProcess',
 			'maxSize',
 			'chunkSize',
 			'data',
@@ -73,11 +77,16 @@ class SkyUploader {
 				this[key] = options[key];
 			}
 		}
+
+		if (typeof options.messages === 'object') {
+			this.messages = Object.assign(this.messages, options.messages);
+		}
 		
-		if (this.maxSize < 1024 * 1024) {
+		// regards as MB if less than 1024
+		if (this.maxSize < 1024) {
 			this.maxSize *= 1024 * 1024;
 		}
-		if (this.chunkSize < 512 * 1024) {
+		if (this.chunkSize < 1024) {
 			this.chunkSize *= 1024 * 1024;
 		}
 	}
@@ -152,8 +161,8 @@ class SkyUploader {
 	add(files) {
 		let count = this.getCount();
 
-		let maxSize = this.maxSize * this.MB;
 		let flagSize = false;
+		let flagDuplicated = false;
 		for (let file of files) {
 			if (count >= this.maxCount) {
 				this.error(this.messages.MAX_COUNT);
@@ -165,7 +174,13 @@ class SkyUploader {
 				continue;
 			}
 
-			file.id     = this.getFileId(file);
+			file.id = this.getFileId(file);
+			
+			if (this.alreadyAdded(file)) {
+				flagDuplicated = true;
+				continue;
+			}
+			
 			file.index  = this.files.length;
 			file.status = this.Status.READY;
 			file.offset = 0;
@@ -184,6 +199,13 @@ class SkyUploader {
 		if (flagSize) {
 			this.error(this.messages.MAX_SIZE);
 		}
+		if (flagDuplicated) {
+			this.error(this.messages.ALREADY_ADDED);
+		}
+	}
+	
+	alreadyAdded(file) {
+		return !!this.files.find(v => v.id === file.id);
 	}
 
 	getCount() {
@@ -216,6 +238,10 @@ class SkyUploader {
 	}
 
 	async upload(file) {
+		while (!this.availProcess()) {
+			await this.sleep(200);			
+		}
+		this.addToProcess(file);
 		this.applyFileStatus(file, this.Status.UPLOAD);
 
 		do {
@@ -349,6 +375,7 @@ class SkyUploader {
 	}
 
 	success(file) {
+		this.removeFromProcess(file);
 		this.progress(file, 100);
 
 		file.offset = file.size;
@@ -362,6 +389,7 @@ class SkyUploader {
 	}
 
 	delete(file) {
+		this.removeFromProcess(file);
 		if (file.status === this.Status.UPLOAD) {
 			file.request.abort();
 		}
@@ -376,6 +404,7 @@ class SkyUploader {
 	}
 
 	abort(file) {
+		this.removeFromProcess(file);
 		if (file.offset > 0) {
 			this.applyFileStatus(file, this.Status.PAUSE);
 			this.callback(this.onPause, [file]);
@@ -456,6 +485,7 @@ class SkyUploader {
 	}
 
 	renderFileError(file, msg) {
+		this.removeFromProcess(file);
 		file.view.error.innerHTML = msg || this.messages.UPLOAD_FAIL;
 		this.applyFileStatus(file, this.Status.ERROR);
 		this.progress(file)
@@ -522,5 +552,25 @@ class SkyUploader {
 		let template = document.createElement('template');
 		template.innerHTML = html.trim();
 		return template.content.firstChild;
+	}
+	
+	availProcess() {
+		return this.processes.length < this.maxProcess;
+	}
+	
+	addToProcess(file) {
+		console.log('end :', file.index);
+		this.processes.push(file);
+	}
+	
+	removeFromProcess(file) {
+		let index = this.processes.indexOf(file);
+		if (index !== -1) {
+			this.processes.splice(index, 1);
+		}
+	}
+	
+	sleep(milliseconds) {
+		return new Promise(resolve => setTimeout(resolve, milliseconds));
 	}
 }

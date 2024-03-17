@@ -114,11 +114,13 @@ Sky Uploader can be customized to fit specific upload requirements. Below are th
 - **handler**: Selector for the file selection button or element.
 - **autoUpload**: Automatically starts the upload process as soon as files are selected. Default is `true`.
 - **accept**: Specifies the types of files that can be selected for upload.
-- **maxCount**: Limits the number of files that can be uploaded in a single operation. Default is `1`.
+- **maxCount**: Limits the number of files that can be uploaded. Default is `1`.
+- **maxProcess**: Limits the number of files that can be uploaded simultaneously. Default is `3`.
 - **maxSize**: Limits the maximum size of files that can be uploaded. Default is 20,971,520 (20MB).
 - **chunkSize**: Specifies the size of each chunk for chunked uploads of large files. Default is 10,485,760 (10MB).
 - **usePreview**: Determines whether to display file thumbnails. It is useful for showing file extension-specific icons or image thumbnails. Default is `false`.
 - **data**: Additional data to be sent with the file upload.
+- **messages**: Specifies the error messages.
 
 ## Callback Functions
 
