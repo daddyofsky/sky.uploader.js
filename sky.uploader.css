@@ -1,0 +1,253 @@
+/* -------------------------------------------------------------------------------*/
+/* COMMON */
+
+.sky-file-container {
+	cursor: pointer;
+}
+.sky-file-container.sky-drag-over {
+	opacity: 0.3;
+}
+
+.sky-file-container.exists .placeholder {
+	display: none;
+}
+.sky-file-container .sky-file-item {
+	cursor: default;
+}
+.sky-file-container .sky-file-item button {
+	cursor: pointer;
+}
+.sky-file-container .sky-file-item .sky-file-error {
+	display: none;
+}
+
+.sky-file-container .sky-file-item.ready .sky-btn-action:before {
+	content: "Upload";
+}
+.sky-file-container .sky-file-item.success .sky-btn-action {
+	display: none;
+}
+.sky-file-container .sky-file-item.success .sky-btn-action:before {
+	content: "Uploaded";
+}
+.sky-file-container .sky-file-item.upload .sky-btn-action:before {
+	content: "Stop";
+}
+.sky-file-container .sky-file-item.pause .sky-btn-action:before {
+	content: "Resume";
+}
+.sky-file-container .sky-file-item.error .sky-btn-action {
+	display: none;
+}
+.sky-file-container .sky-file-item .sky-btn-delete:before {
+	content: "Delete";
+}
+
+.sky-file-container .sky-file-item progress {
+	background-color: #dae1fc;
+}
+.sky-file-container .sky-file-item progress[value] {
+	appearance: none;
+	border: none;
+	border-radius: 5px;
+	overflow: hidden;
+}
+.sky-file-container .sky-file-item progress::-webkit-progress-bar {
+	background-color: #dae1fc; /* background in chrome, safari*/
+}
+.sky-file-container .sky-file-item progress::-webkit-progress-value {
+	background-color: royalblue; /* value in chrome, safari */
+	transition: width 0.5s ease-in-out;
+}
+.sky-file-container .sky-file-item progress::-moz-progress-bar {
+	background-color: royalblue; /* value in firefox */
+	transition: width 0.5s ease-in-out;
+}
+
+/* -------------------------------------------------------------------------------*/
+/* LIST TYPE */
+
+.sky-file-container.list .sky-file-item {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	align-items: center;
+	position: relative;
+	margin: 5px 0;
+
+	.sky-file-preview {
+		width: 50px;
+		height: 50px;
+		background-size: cover;
+	}
+	.sky-file-size:before {
+		content: "(";
+	}
+	.sky-file-size:after {
+		content: ")";
+	}
+	progress {
+		display: none;
+	}
+	.sky-file-error {
+		display: none;
+	}
+}
+
+.sky-file-container.list .sky-file-item progress {
+	display: none;
+}
+
+.sky-file-container.list .sky-file-item.ready {
+	.sky-btn-action {
+		display: inline-block;
+	}
+}
+
+.sky-file-container.list .sky-file-item.upload {
+	progress {
+		display: inline-block;
+	}
+	.sky-btn-delete {
+		display: none;
+	}
+}
+
+.sky-file-container.list .sky-file-item.error {
+	.sky-file-error {
+		display: inline-block;
+	}
+}
+
+
+/* -------------------------------------------------------------------------------*/
+/* GALLERY TYPE */
+
+.sky-file-container.gallery {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.sky-file-container.gallery .sky-file-item {
+	position: relative;
+	width: 160px;
+	height: 160px;
+	border-radius: 10px;
+	text-align: center;
+	background-color: #eee;
+	overflow: hidden;
+
+	.sky-file-preview {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background-size: cover;
+		z-index: 0;
+	}
+	.sky-file-name, .sky-file-size {
+		display: none;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		max-width: 80%;
+		padding: 3px 5px;
+		border-radius: 3px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		color: #333;
+		background-color: #eee;
+	}
+	.sky-file-name {
+		transform: translate(-50%, -120%);
+	}
+	.sky-file-size {
+		transform: translate(-50%, 20%);
+	}
+	.sky-btn-action {
+		display: none;
+		position: absolute;
+		left: 50%;
+		bottom: 10px;
+		transform: translate(-50%, 0);
+	}
+	.sky-btn-delete {
+		display: none;
+		position: absolute;
+		top: 10px;
+		right: 10px;
+	}
+
+	.sky-file-error {
+		display: none;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		max-width: 100%;
+		padding: 5px;
+		border-radius: 3px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		color: #fff;
+		background-color: firebrick;
+	}
+}
+
+.sky-file-container.gallery .sky-file-item progress {
+	display: none;
+	position: absolute;
+	width: 80%;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.sky-file-container.gallery .sky-file-item.ready {
+	.sky-btn-action {
+		display: block;
+	}
+}
+
+.sky-file-container.gallery .sky-file-item.upload {
+	progress {
+		display: block;
+	}
+	.sky-btn-action {
+		display: block;
+	}
+	.sky-btn-delete {
+		display: none;
+	}
+}
+.sky-file-container.gallery .sky-file-item.error {
+	.sky-file-error {
+		display: block;
+	}
+}
+
+.sky-file-container.gallery .sky-file-item:hover {
+	.sky-file-preview {
+		opacity: 0.8;
+		filter: blur(5px);
+	}
+	.sky-file-name, .sky-file-size {
+		display: block;
+	}
+	.sky-btn-delete {
+		display: block;
+	}
+}
+
+.sky-file-container.gallery .sky-file-item.upload:hover {
+	.sky-file-name, .sky-file-size {
+		display: none;
+	}
+	.sky-btn-delete {
+		display: none;
+	}
+}
