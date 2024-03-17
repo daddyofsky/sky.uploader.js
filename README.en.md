@@ -1,4 +1,4 @@
-[Korean](README.md)
+[한국어 문서 읽기](README.md)
 
 # Sky Uploader
 
@@ -133,7 +133,7 @@ Sky Uploader supports several callback functions to provide feedback and allow c
 - **onFail**: Called when a file upload fails.
 - **onError**: Invoked during file selection and the upload process in case of an error.
 
-### Styling
+## Styling
 
 SkyUploader does not apply direct styles, allowing users to freely design by specifying CSS classes.
 
