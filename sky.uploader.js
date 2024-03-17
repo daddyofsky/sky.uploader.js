@@ -18,7 +18,7 @@ class SkyUploader {
 	maxCount   = 1;
 	maxProcess = 3;
 	maxSize    = 20 * 1024 * 1024; // MB
-	chunkSize  = 10 * 1024 * 1024; // MB
+	chunkSize  = 2 * 1024 * 1024; // MB
 	data       = {};
 	messages   = {
 		MAX_COUNT: '업로드 가능한 파일 갯수를 초과하였습니다.',

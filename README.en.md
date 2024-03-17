@@ -117,7 +117,7 @@ Sky Uploader can be customized to fit specific upload requirements. Below are th
 - **maxCount**: Limits the number of files that can be uploaded. Default is `1`.
 - **maxProcess**: Limits the number of files that can be uploaded simultaneously. Default is `3`.
 - **maxSize**: Limits the maximum size of files that can be uploaded. Default is 20,971,520 (20MB).
-- **chunkSize**: Specifies the size of each chunk for chunked uploads of large files. Default is 10,485,760 (10MB).
+- **chunkSize**: Specifies the size of each chunk for chunked uploads of large files. Default is 2,097,152 (2MB).
 - **usePreview**: Determines whether to display file thumbnails. It is useful for showing file extension-specific icons or image thumbnails. Default is `false`.
 - **data**: Additional data to be sent with the file upload.
 - **messages**: Specifies the error messages.
