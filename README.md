@@ -157,6 +157,8 @@ SkyUploader는 디자인을 위해 직접적인 스타일을 적용하지 않으
     <div class="sky-file-preview"><!-- 썸네일 영역 --></div>
     <div class="sky-file-name"><!-- 파일명 --></div>
     <div class="sky-file-size"><!-- 파일 크기 --></div>
+    <button class="sky-btn-action" type="button"></button>
+    <button class="sky-btn-delete" type="button"></button>
     <progress max="100" value="0">0 %</progress>
     <div class="sky-file-error">Error</div>
   </div>

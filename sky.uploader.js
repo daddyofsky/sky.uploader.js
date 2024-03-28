@@ -43,10 +43,11 @@ class SkyUploader {
 
 	constructor(container, options) {
 		this.option(options || {});
-		this.initInput();
-		this.initContainer(container);
-		if (typeof options.handler !== 'undefined') {
-			this.initHandler(options.handler)
+		if (this.initContainer(container)) {
+			if (typeof options.handler !== 'undefined') {
+				this.initHandler(options.handler)
+			}
+			this.initInput();
 		}
 	}
 
@@ -97,16 +98,14 @@ class SkyUploader {
 			this.input.remove();
 		}
 
-		const input = document.createElement('input');
-		input.setAttribute('type', 'file');
-		input.className = 'sky-hidden-input';
+		const input = this.createElement(`<input type="file" class="sky-hidden-input">`);
+		input.style.display = 'none';
 		if (this.maxCount > 1) {
 			input.setAttribute('multiple', 'multiple');
 		}
 		if (this.accept) {
 			input.setAttribute('accept', this.accept);
 		}
-		input.style.display = 'none';
 		input.addEventListener('change', e => {
 			this.add(e.target.files);
 		});
@@ -117,11 +116,17 @@ class SkyUploader {
 
 	initContainer(container) {
 		this.container = typeof container === 'string' ? document.querySelector(container) : container;
+		if (!this.container) {
+			console.log('No Upload Container :', container);
+			return false;
+		}
 		this.container.classList.add('sky-file-container');
 		this.applyContainerStatus();
 
 		this.container.addEventListener('click', _ => {
-			this.browse();
+			if (!this.handler) {
+				this.browse();
+			}
 		});
 		this.container.addEventListener('dragover', e => {
 			e.preventDefault();
@@ -139,6 +144,7 @@ class SkyUploader {
 			}
 			this.container.classList.remove('sky-drag-over')
 		});
+		return true;
 	}
 
 	initHandler(handler) {
@@ -284,6 +290,7 @@ class SkyUploader {
 
 			const request = file.request = new XMLHttpRequest();
 			request.open('POST', this.url);
+			request.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
 
 			request.upload.onprogress = e => {
 				const total  = file.size;
@@ -439,14 +446,13 @@ class SkyUploader {
 			view.preview = this.createElement(`<div class="sky-file-preview"></div>`),
 			view.name = this.createElement(`<div class="sky-file-name" title="${file.name}">${file.name}</div>`),
 			view.size = this.createElement(`<div class="sky-file-size">${this.formatFileSize(file.size)}</div>`),
-			view.btnAction = this.createElement(`<button class="sky-btn-action"></button>`),
-			view.btnDelete = this.createElement(`<button class="sky-btn-delete"></button>`),
+			view.btnAction = this.createElement(`<button class="sky-btn-action" type="button"></button>`),
+			view.btnDelete = this.createElement(`<button class="sky-btn-delete" type="button"></button>`),
 			view.progress = this.createElement(`<progress max="100" value="0">0 %</progress>`),
 			view.error = this.createElement(`<div class="sky-file-error">Error</div>`),
 		);
 
 		view.addEventListener('click', e => {
-			e.preventDefault();
 			e.stopPropagation();
 		});
 		view.btnAction.addEventListener('click', e => {
